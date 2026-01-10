@@ -2,7 +2,8 @@ name: ETF Scan
 
 on:
   schedule:
-    - cron: '15,45 3-9 * * 1-5'
+    - cron: '15,45 3-9 * * 1-5'   # intraday scans
+    - cron: '2 10 * * 1-5'        # daily summary at 15:32 IST
   workflow_dispatch:
 
 jobs:
@@ -10,11 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - run: pip install yfinance pandas requests
-      - run: python etf_alert.py
+
+      - name: Intraday Scan
+        if: github.event.schedule != '2 10 * * 1-5'
+        run: python etf_alert.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+
+      - name: Daily Summary
+        if: github.event.schedule == '2 10 * * 1-5'
+        run: python etf_alert.py
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          MODE: SUMMARY
