@@ -9,7 +9,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 
 
 ETF_FILE = "etfs.csv"
-THRESHOLD = -2.5
+THRESHOLD = -100
 
 def send_telegram(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -46,3 +46,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
