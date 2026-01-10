@@ -7,6 +7,8 @@ import os
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
+print("BOT_TOKEN from env:", bool(BOT_TOKEN))
+print("CHAT_ID from env:", CHAT_ID)
 
 ETF_FILE = "etfs.csv"
 THRESHOLD = -100
@@ -46,4 +48,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
