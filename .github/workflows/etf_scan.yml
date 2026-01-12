@@ -1,15 +1,20 @@
-name: ETF Scan
+name: ETF Monitor
 
 on:
   schedule:
-    - cron: '15,45 3-9 * * 1-5'   # intraday scans
-    - cron: '2 10 * * 1-5'        # daily summary at 15:32 IST
-    - cron: '*/5 * * * *'
+    # Intraday scans: 9:15–15:15 IST
+    - cron: '15,45 3-9 * * 1-5'
+
+    # End-of-day summary: 15:35 IST
+    - cron: '5 10 * * 1-5'
+
+    # TEST MODE — every 1 minute (TEMPORARY)
+    - cron: '* * * * *'
 
   workflow_dispatch:
 
 jobs:
-  scan:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,16 +26,25 @@ jobs:
       - run: pip install yfinance pandas requests
 
       - name: Intraday Scan
-        if: github.event.schedule != '2 10 * * 1-5'
+        if: github.event.schedule == '15,45 3-9 * * 1-5'
         run: python etf_alert.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+          MODE: INTRADAY
 
-      - name: Daily Summary
-        if: github.event.schedule == '2 10 * * 1-5'
+      - name: End of Day Summary
+        if: github.event.schedule == '5 10 * * 1-5'
         run: python etf_alert.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          MODE: SUMMARY
+          MODE: EOD
+
+      - name: Test Ping
+        if: github.event.schedule == '* * * * *'
+        run: python etf_alert.py
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          MODE: TEST
