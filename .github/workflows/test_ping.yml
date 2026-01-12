@@ -1,8 +1,8 @@
-name: Telegram Test Ping
+name: Telegram Test Ping (30 min)
 
 on:
   schedule:
-    - cron: '* * * * *'
+    - cron: '0,30 * * * *'   # every 30 minutes, UTC
   workflow_dispatch:
 
 jobs:
