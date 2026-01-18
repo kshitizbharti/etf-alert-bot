@@ -8,9 +8,6 @@ on:
     # End-of-day summary: 15:35 IST
     - cron: '5 10 * * 1-5'
 
-    # TEST MODE — every 1 minute (TEMPORARY)
-    - cron: '* * * * *'
-
   workflow_dispatch:
 
 jobs:
@@ -41,10 +38,4 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MODE: EOD
 
-      - name: Test Ping
-        if: github.event.schedule == '* * * * *'
-        run: python etf_alert.py
-        env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          MODE: TEST
+      
